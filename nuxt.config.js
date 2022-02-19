@@ -1,3 +1,7 @@
+const dev = process.env.DEV_API
+const prod = process.env.PROD_API
+const api = process.env.NODE_ENV === 'development' ? dev : prod
+
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -34,12 +38,25 @@ export default {
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
+    [
+      'nuxt-stripe-module',
+      {
+        publishableKey:
+          'pk_test_51KUScEKNGNt37upGYKjjrWyWB3fP8IqVbrDSSWce7vTpGskB2Bjo5HMv3JWW3CVVwvKE19b5cyuMMJjXmQHWlEyO00C3QTsaE0',
+      },
+    ],
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: '/',
+    proxy: true,
+  },
+
+  proxy: {
+    '/api/': {
+      target: api,
+      pathRewrite: { '^/api/': '' },
+    },
   },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
